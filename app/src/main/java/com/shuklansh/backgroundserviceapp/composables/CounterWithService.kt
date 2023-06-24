@@ -10,10 +10,12 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -77,6 +79,15 @@ fun CounterWithService() {
             query = it
         },
             enabled = keybaordEnable,
+            colors = TextFieldDefaults.textFieldColors(
+                //backgroundColor = Color(204, 204, 204, 255),
+                cursorColor = Color.Black,
+                //textColor = Color.Black,
+                //disabledLabelColor = Color(66, 66, 66, 255),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            label = { Text(text = "Enter countdown time in minutes")},
             keyboardActions = KeyboardActions(
                 onGo = {
                     var limit = query.toInt()

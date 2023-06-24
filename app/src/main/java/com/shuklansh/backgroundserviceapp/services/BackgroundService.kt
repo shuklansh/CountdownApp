@@ -30,7 +30,7 @@ class BackgroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         if(intent!=null){
-            count = intent.getIntExtra("valByUser",10)
+            count = intent.getIntExtra("valByUser",10) * 60
         }
 
         isRunning = true
@@ -53,7 +53,7 @@ class BackgroundService : Service() {
         }
 
 
-        return START_REDELIVER_INTENT
+        return START_STICKY
     }
 
 
