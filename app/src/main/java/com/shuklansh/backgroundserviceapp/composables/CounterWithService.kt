@@ -4,19 +4,20 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -26,6 +27,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.ui.PlayerControlView
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
+import com.google.common.reflect.Reflection.getPackageName
+import com.shuklansh.backgroundserviceapp.R
 import com.shuklansh.backgroundserviceapp.services.BackgroundService
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -67,12 +81,68 @@ fun CounterWithService() {
 
     val keybo = LocalSoftwareKeyboardController.current
 
+    val url = "android.resource://" + context.packageName + "/${R.raw.goggins}"
+
+//    var muted by remember {
+//        mutableStateOf(false)
+//    }
+
 
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+
+        val exoPlayer = remember {
+            ExoPlayer.Builder(context).build().apply {
+                setMediaItem(MediaItem.fromUri(url))
+                repeatMode = ExoPlayer.REPEAT_MODE_ALL
+                playWhenReady = playWhenReady
+                volume = 0f
+                prepare()
+                play()
+            }
+        }
+
+        if (count == 0) {
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+//                IconButton(onClick = {
+//                    if (muted) {
+//                        exoPlayer.volume = 1f
+//                        muted = false
+//                    } else {
+//                        exoPlayer.volume = 0f
+//                        muted = true
+//                    }
+//
+//                }) {
+//                    Icon(
+//                        imageVector = Icons.Default.AudioFile,
+//                        contentDescription = "audio mute toggle"
+//                    )
+//                }
+                Spacer(Modifier.height(12.dp))
+                AndroidView(factory = { context ->
+                    PlayerView(context).apply {
+                        player = exoPlayer
+                    }
+
+                },
+                modifier = Modifier.padding(12.dp).clip(RoundedCornerShape(8.dp))
+                    )
+
+            }
+        } else {
+            Text(text = "Keep pushing")
+        }
+
+        Spacer(Modifier.height(12.dp))
 
 
         TextField(value = query, onValueChange = {
@@ -87,8 +157,7 @@ fun CounterWithService() {
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            shape = RoundedCornerShape(24.dp)
-            ,
+            shape = RoundedCornerShape(24.dp),
             label = { Text(text = "Enter countdown time in minutes") },
             keyboardActions = KeyboardActions(
                 onGo = {
