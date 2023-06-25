@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,7 +35,7 @@ fun CounterWithService() {
         mutableStateOf(0)
     }
 
-    var keybaordEnable by remember{
+    var keybaordEnable by remember {
         mutableStateOf(true)
     }
 
@@ -85,26 +86,41 @@ fun CounterWithService() {
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            label = { Text(text = "Enter countdown time in minutes")},
+            label = { Text(text = "Enter countdown time in minutes") },
             keyboardActions = KeyboardActions(
                 onGo = {
-
-                    var limit = query.toInt()
-                    var i = Intent(context, BackgroundService::class.java)
-                    i.putExtra("valByUser", limit)
-                    context.startService(i)
-                    focuManager.clearFocus()
-                    keybo?.hide()
-                    keybaordEnable = false
+                    if (!query.isBlank()) {
+                        var limit = query.toInt()
+                        var i = Intent(context, BackgroundService::class.java)
+                        i.putExtra("valByUser", limit)
+                        context.startService(i)
+                        focuManager.clearFocus()
+                        keybo?.hide()
+                        keybaordEnable = false
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Please Enter a valid time limit",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 },
                 onDone = {
-                    var limit = query.toInt()
-                    var i = Intent(context, BackgroundService::class.java)
-                    i.putExtra("valByUser", limit)
-                    context.startService(i)
-                    focuManager.clearFocus()
-                    keybo?.hide()
-                    keybaordEnable = false
+                    if (!query.isBlank()) {
+                        var limit = query.toInt()
+                        var i = Intent(context, BackgroundService::class.java)
+                        i.putExtra("valByUser", limit)
+                        context.startService(i)
+                        focuManager.clearFocus()
+                        keybo?.hide()
+                        keybaordEnable = false
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Please Enter a valid time limit",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             ),
             keyboardOptions = KeyboardOptions(
@@ -129,15 +145,25 @@ fun CounterWithService() {
         Spacer(Modifier.height(12.dp))
 
         Row() {
-            Button(onClick = {
-                var limit = query.toInt()
-                var i = Intent(context, BackgroundService::class.java)
-                i.putExtra("valByUser", limit)
-                context.startService(i)
-                focuManager.clearFocus()
-                keybo?.hide()
-                keybaordEnable = false
-            }) {
+            Button(onClick =
+            {
+                if (!query.isBlank()) {
+                    var limit = query.toInt()
+                    var i = Intent(context, BackgroundService::class.java)
+                    i.putExtra("valByUser", limit)
+                    context.startService(i)
+                    focuManager.clearFocus()
+                    keybo?.hide()
+                    keybaordEnable = false
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Please Enter a valid time limit",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            ) {
                 Text("Start Service")
             }
 
@@ -158,8 +184,7 @@ fun CounterWithService() {
 }
 
 
-
-fun Counter(time: String) : String  {
+fun Counter(time: String): String {
 //
     val name = time.toInt()
     //val time = SimpleTimeZone.
