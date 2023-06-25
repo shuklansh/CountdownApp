@@ -24,13 +24,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shuklansh.backgroundserviceapp.ViewModel
 import com.shuklansh.backgroundserviceapp.services.BackgroundService
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CounterWithService() {
-
 
     var count by remember {
         mutableStateOf(0)
@@ -90,6 +88,7 @@ fun CounterWithService() {
             label = { Text(text = "Enter countdown time in minutes")},
             keyboardActions = KeyboardActions(
                 onGo = {
+
                     var limit = query.toInt()
                     var i = Intent(context, BackgroundService::class.java)
                     i.putExtra("valByUser", limit)
@@ -97,8 +96,6 @@ fun CounterWithService() {
                     focuManager.clearFocus()
                     keybo?.hide()
                     keybaordEnable = false
-
-
                 },
                 onDone = {
                     var limit = query.toInt()
@@ -132,7 +129,6 @@ fun CounterWithService() {
         Spacer(Modifier.height(12.dp))
 
         Row() {
-
             Button(onClick = {
                 var limit = query.toInt()
                 var i = Intent(context, BackgroundService::class.java)
