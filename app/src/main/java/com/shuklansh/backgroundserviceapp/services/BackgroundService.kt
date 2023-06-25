@@ -41,7 +41,7 @@ class BackgroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         if (intent != null) {
-            count = intent.getIntExtra("valByUser", 0)
+            count = intent.getIntExtra("valByUser", 0) * 60
         }
 
 

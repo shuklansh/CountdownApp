@@ -37,6 +37,20 @@ class CounterNotififcationService(private val context: Context) {
         activityIntent,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
     )
+    fun Counter(time: String): String {
+//
+        val name = time.toInt()
+        //val time = SimpleTimeZone.
+
+        var s = name % 60
+        var h = name / 60
+        var m = h % 60
+        h = h / 60
+        var text = "%02d:%02d:%02d".format(h, m, s)
+        return text
+
+//    Text(text = time)
+    }
 
 
     fun showNotifications(counter: Int) {
@@ -45,8 +59,8 @@ class CounterNotififcationService(private val context: Context) {
             COUNTER_CHANNEL
         )
             .setSmallIcon(R.drawable.ic_baseline_timer_24)
-            .setContentTitle("CountDown Timer")
-            .setContentText("remaining seconds : $counter")
+            .setContentTitle("Countdown Timer")
+            .setContentText("${Counter(counter.toString())} remaining")
             .setContentIntent(stopService)
 //            .addAction(
 //                R.drawable.ic_baseline_timer_24,

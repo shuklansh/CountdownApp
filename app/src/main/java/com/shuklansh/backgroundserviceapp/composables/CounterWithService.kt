@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
@@ -86,6 +87,8 @@ fun CounterWithService() {
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
+            shape = RoundedCornerShape(24.dp)
+            ,
             label = { Text(text = "Enter countdown time in minutes") },
             keyboardActions = KeyboardActions(
                 onGo = {

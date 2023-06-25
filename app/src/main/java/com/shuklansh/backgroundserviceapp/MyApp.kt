@@ -18,7 +18,7 @@ class MyApp : Application() {
             val channel = NotificationChannel(
                 CounterNotififcationService.COUNTER_CHANNEL,
                 "counter",
-                NotificationManager.IMPORTANCE_HIGH
+                NotificationManager.IMPORTANCE_DEFAULT
             )
             channel.description = "shows count value"
 
