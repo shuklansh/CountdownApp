@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -83,9 +84,12 @@ fun CounterWithService() {
 
     val url = "android.resource://" + context.packageName + "/${R.raw.goggins}"
 
-//    var muted by remember {
-//        mutableStateOf(false)
-//    }
+    var muted by remember {
+        mutableStateOf(false)
+    }
+    var mutedVol by remember {
+        mutableStateOf(0f)
+    }
 
 
     Column(
@@ -100,7 +104,7 @@ fun CounterWithService() {
                 setMediaItem(MediaItem.fromUri(url))
                 repeatMode = ExoPlayer.REPEAT_MODE_ALL
                 playWhenReady = playWhenReady
-                volume = 0f
+                volume = mutedVol
                 prepare()
                 play()
             }
@@ -112,30 +116,45 @@ fun CounterWithService() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-//                IconButton(onClick = {
-//                    if (muted) {
-//                        exoPlayer.volume = 1f
-//                        muted = false
-//                    } else {
-//                        exoPlayer.volume = 0f
-//                        muted = true
-//                    }
-//
-//                }) {
-//                    Icon(
-//                        imageVector = Icons.Default.AudioFile,
-//                        contentDescription = "audio mute toggle"
-//                    )
-//                }
-                Spacer(Modifier.height(12.dp))
+
+
                 AndroidView(factory = { context ->
                     PlayerView(context).apply {
+
                         player = exoPlayer
                     }
 
                 },
-                modifier = Modifier.padding(12.dp).clip(RoundedCornerShape(8.dp))
+                modifier = Modifier
+                    .padding(12.dp)
+                    .clip(RoundedCornerShape(8.dp))
                     )
+                Spacer(Modifier.height(12.dp))
+                Row(Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+                    ) {
+
+                    IconButton(
+                        onClick = {
+                            if (muted) {
+                                mutedVol = 1f
+                                exoPlayer.volume = mutedVol
+                                muted = false
+                            } else {
+                                mutedVol = 0f
+                                exoPlayer.volume = mutedVol
+                                muted = true
+                            }
+
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = if(muted){R.drawable.ic_baseline_volume_off_24}else{R.drawable.ic_baseline_volume_up_24},),
+                            contentDescription = "audio mute toggle"
+                        )
+                    }
+
+                }
 
             }
         } else {
