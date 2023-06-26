@@ -11,16 +11,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.exoplayer2.ExoPlayer
 import com.shuklansh.backgroundserviceapp.composables.CounterWithService
 import com.shuklansh.backgroundserviceapp.ui.theme.BackgroundServiceAppTheme
 
 class MainActivity : ComponentActivity() {
 
-
+  //  lateinit var exoPlayer: ExoPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+
+
             BackgroundServiceAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(

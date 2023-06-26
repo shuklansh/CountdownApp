@@ -4,15 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
+import android.util.SparseArray
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -29,19 +27,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import at.huber.youtubeExtractor.VideoMeta
+import at.huber.youtubeExtractor.YouTubeExtractor
+import at.huber.youtubeExtractor.YouTubeUriExtractor
+import at.huber.youtubeExtractor.YtFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player.RepeatMode
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
-import com.google.common.reflect.Reflection.getPackageName
 import com.shuklansh.backgroundserviceapp.R
 import com.shuklansh.backgroundserviceapp.services.BackgroundService
+
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -82,7 +86,8 @@ fun CounterWithService() {
 
     val keybo = LocalSoftwareKeyboardController.current
 
-    val url = "android.resource://" + context.packageName + "/${R.raw.goggins}"
+//    val url = "android.resource://" + context.packageName + "/${R.raw.goggins}"
+
 
     var muted by remember {
         mutableStateOf(false)
@@ -91,6 +96,10 @@ fun CounterWithService() {
         mutableStateOf(0f)
     }
 
+    val playbackpos: Long = 0
+    val currentWindow = 0
+    val pwhenr = true
+
 
     Column(
         Modifier.fillMaxSize(),
@@ -98,17 +107,93 @@ fun CounterWithService() {
         verticalArrangement = Arrangement.Center
     ) {
 
+        val youtubeLink = "http://youtube.com/watch?v=BM-Yf-DXhMM"
 
-        val exoPlayer = remember {
-            ExoPlayer.Builder(context).build().apply {
-                setMediaItem(MediaItem.fromUri(url))
-                repeatMode = ExoPlayer.REPEAT_MODE_ALL
-                playWhenReady = playWhenReady
-                volume = mutedVol
-                prepare()
-                play()
-            }
-        }
+        val exoPlayer = remember { ExoPlayer.Builder(context).build().apply {
+
+            val dataSourceFactory : DataSource.Factory = DefaultDataSourceFactory(
+                context, Util.getUserAgent(context, context.packageName)
+            )
+            val mediaItem = MediaItem.fromUri("https://rr6---sn-ci5gup-a3vs.googlevideo.com/videoplayback?expire=1687791290&ei=WlKZZKlPzonzBPiqq-gG&ip=170.247.220.71&id=o-AN_x8OxgR7IqBAMrhQiVZfNhoTdnN0DsaDVsZ6mYzZ2m&itag=22&source=youtube&requiressl=yes&spc=qEK7ByHj7zCUbake9MVzSOEJlUnodBUCPOu5W6_weg&vprv=1&svpuc=1&mime=video%2Fmp4&ns=rwyPhGyDs9eMKD-Cd-VT4wUN&cnr=14&ratebypass=yes&dur=68.893&lmt=1673526261383648&fexp=24007246,24350018,24362685&beids=24350018&c=WEB&txp=5311224&n=z8s38jUJWNjoKQ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRgIhAOOlwduii75J6IdUM1eEn5LoYLMQ1ubpLOTIRGVSDyTdAiEA8esTJaOktCVe-XBgycZ4kJ457CKWn4K61GPVSivMKfw%3D&title=They%20Don%27t%20Know%20Me%20Son%20%7C%20David%20Goggins&redirect_counter=1&rm=sn-ab5es77z&req_id=846e0b535594a3ee&cms_redirect=yes&cmsv=e&ipbypass=yes&mh=nf&mip=110.227.113.170&mm=31&mn=sn-ci5gup-a3vs&ms=au&mt=1687784967&mv=m&mvi=6&pl=22&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRAIgPkkPWHus7G9VG09iwbgEzCp4MLq3WteYS2n5EW5oBrACIByvziGCFnCBn2OZaDeh8_HzxvGXplg57_HAg3qP1BjL")
+            val source = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+            this.setMediaSource(source)
+            this.prepare()
+
+
+        } }
+//
+//        val exoPlayer = remember {
+//            ExoPlayer.Builder(context).build().apply {
+//                setMediaItem(MediaItem.fromUri(url))
+//                repeatMode = ExoPlayer.REPEAT_MODE_ALL
+//                playWhenReady = playWhenReady
+//                volume = mutedVol
+//                prepare()
+//                play()
+//            }
+//        }
+
+//        val exoPlayer = remember { ExoPlayer.Builder(context).build().apply{
+//            repeatMode = ExoPlayer.REPEAT_MODE_ALL
+//            playWhenReady = pwhenr
+//            volume = mutedVol
+//            prepare()
+//            play()
+//        }}
+
+        //exoPlayer = ExoPlayer.Builder(context).build()
+
+
+//        val youtubeLink = "https://youtu.be/BM-Yf-DXhMM"
+
+
+//        object : YouTubeExtractor(context) {
+//            override fun onExtractionComplete(
+//                ytFiles: SparseArray<YtFile>?,
+//                videoMeta: VideoMeta?
+//            ) {
+//                if (ytFiles != null) {
+//                    val itag = 137
+//                    val audioTag = 140
+//                    val videoUrl = ytFiles[itag].url
+//                    val audioUrl = ytFiles[audioTag].url
+//
+//                    val audioSource: MediaSource = ProgressiveMediaSource.Factory(
+//                        DefaultHttpDataSource.Factory()
+//                    ).createMediaSource(MediaItem.fromUri(audioUrl))
+//
+//                    val videoSource: MediaSource = ProgressiveMediaSource.Factory(
+//                        DefaultHttpDataSource.Factory()
+//                    ).createMediaSource(MediaItem.fromUri(videoUrl))
+//
+//
+//                    exoPlayer.setMediaSource(
+//                        MergingMediaSource(
+//                            true, videoSource, audioSource
+//                        ), true
+//                    )
+//
+////                        setMediaItem(MediaItem.fromUri(youtubeLink))
+//
+//
+//
+//
+//
+//                }
+//            }
+//        }.extract(youtubeLink, false, true)
+
+//
+//        object : YouTubeExtractor(context) {
+//            override fun onExtractionComplete(ytFiles: SparseArray<YtFile>, vMeta: VideoMeta) {
+//                if (ytFiles != null) {
+//                    val itag = 22
+//                    val downloadUrl = ytFiles[itag].url
+//
+//                }
+//            }
+//        }.extract(youtubeLink, false,true)
+
 
         if (count == 0) {
             Column(
@@ -118,21 +203,25 @@ fun CounterWithService() {
             ) {
 
 
-                AndroidView(factory = { context ->
-                    PlayerView(context).apply {
+                AndroidView(
+                    factory = { context ->
+                        PlayerView(context).apply {
+                            player = exoPlayer
+                            (player as ExoPlayer).playWhenReady = true
+                        }
 
-                        player = exoPlayer
-                    }
-
-                },
-                modifier = Modifier
-                    .padding(12.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    )
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                        .padding(12.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
                 Spacer(Modifier.height(12.dp))
-                Row(Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-                    ) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
 
                     IconButton(
                         onClick = {
@@ -149,7 +238,13 @@ fun CounterWithService() {
                         }
                     ) {
                         Icon(
-                            painter = painterResource(id = if(muted){R.drawable.ic_baseline_volume_off_24}else{R.drawable.ic_baseline_volume_up_24},),
+                            painter = painterResource(
+                                id = if (muted) {
+                                    R.drawable.ic_baseline_volume_off_24
+                                } else {
+                                    R.drawable.ic_baseline_volume_up_24
+                                }
+                            ),
                             contentDescription = "audio mute toggle"
                         )
                     }
