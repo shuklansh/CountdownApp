@@ -213,7 +213,6 @@ fun CounterWithService() {
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(250.dp)
                         .padding(12.dp)
                         .clip(RoundedCornerShape(8.dp))
                 )
