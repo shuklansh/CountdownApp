@@ -114,7 +114,7 @@ fun CounterWithService() {
             val dataSourceFactory : DataSource.Factory = DefaultDataSourceFactory(
                 context, Util.getUserAgent(context, context.packageName)
             )
-            val mediaItem = MediaItem.fromUri("https://rr6---sn-ci5gup-a3vs.googlevideo.com/videoplayback?expire=1687791290&ei=WlKZZKlPzonzBPiqq-gG&ip=170.247.220.71&id=o-AN_x8OxgR7IqBAMrhQiVZfNhoTdnN0DsaDVsZ6mYzZ2m&itag=22&source=youtube&requiressl=yes&spc=qEK7ByHj7zCUbake9MVzSOEJlUnodBUCPOu5W6_weg&vprv=1&svpuc=1&mime=video%2Fmp4&ns=rwyPhGyDs9eMKD-Cd-VT4wUN&cnr=14&ratebypass=yes&dur=68.893&lmt=1673526261383648&fexp=24007246,24350018,24362685&beids=24350018&c=WEB&txp=5311224&n=z8s38jUJWNjoKQ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRgIhAOOlwduii75J6IdUM1eEn5LoYLMQ1ubpLOTIRGVSDyTdAiEA8esTJaOktCVe-XBgycZ4kJ457CKWn4K61GPVSivMKfw%3D&title=They%20Don%27t%20Know%20Me%20Son%20%7C%20David%20Goggins&redirect_counter=1&rm=sn-ab5es77z&req_id=846e0b535594a3ee&cms_redirect=yes&cmsv=e&ipbypass=yes&mh=nf&mip=110.227.113.170&mm=31&mn=sn-ci5gup-a3vs&ms=au&mt=1687784967&mv=m&mvi=6&pl=22&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRAIgPkkPWHus7G9VG09iwbgEzCp4MLq3WteYS2n5EW5oBrACIByvziGCFnCBn2OZaDeh8_HzxvGXplg57_HAg3qP1BjL")
+            val mediaItem = MediaItem.fromUri("https://rr8---sn-ci5gup-qxay.googlevideo.com/videoplayback?expire=1687986665&ei=iU2cZP3uKsq94t4PxrS_wA4&ip=103.121.205.48&id=o-AE35EaFX_BmIz0Gz8Utcx8LJ9cBZ8GEd_2AK9y7r7hGI&itag=22&source=youtube&requiressl=yes&spc=qEK7B4AmwmgxGzoA__ZT4DxW7_gosfs6VLcJLT9mmw&vprv=1&svpuc=1&mime=video%2Fmp4&ns=f_BYU8UlEbMc51BwHxqcQoEN&cnr=14&ratebypass=yes&dur=68.893&lmt=1673526261383648&fexp=24007246,24363391&c=WEB&txp=5311224&n=SfhuXLfW8SVEtQ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRQIhAO0yNAy7BMRRjX3wgnsJivmcTuDc7Ar-k36ms0UhRpiBAiBLTKmcjwMxihYJuTSWM1w7T5Wj6OlKniWTk1EaukzktA%3D%3D&title=They%20Don%27t%20Know%20Me%20Son%20%7C%20David%20Goggins&rm=sn-gxo0cgv5qc5oq-3o0e7z,sn-qxaed7z&req_id=a51fa216023ea3ee&redirect_counter=2&cms_redirect=yes&cmsv=e&ipbypass=yes&mh=nf&mip=171.76.13.68&mm=29&mn=sn-ci5gup-qxay&ms=rdu&mt=1687976019&mv=m&mvi=8&pcm2cms=yes&pl=20&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pcm2cms,pl&lsig=AG3C_xAwRgIhANUPLQqyv553gRoUED48MBNQ90C9ULARuoxwcWttv4gZAiEA65gPKLRpLtW51_4FJX_dMIU6WpLZzs8IujzEKJnibko%3D")
             val source = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
             this.setMediaSource(source)
             this.prepare()
@@ -253,6 +253,8 @@ fun CounterWithService() {
             }
         } else {
             Text(text = "Keep pushing")
+            exoPlayer.volume = 0f
+            exoPlayer.pause()
         }
 
         Spacer(Modifier.height(12.dp))
