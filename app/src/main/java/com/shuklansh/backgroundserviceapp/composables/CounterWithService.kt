@@ -30,11 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.Player.REPEAT_MODE_ALL
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.util.Util
 import com.maxrave.kotlinyoutubeextractor.*
 import com.maxrave.kotlinyoutubeextractor.State
 import com.shuklansh.backgroundserviceapp.R
@@ -45,6 +42,14 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 @OptIn(ExperimentalComposeUiApi::class, DelicateCoroutinesApi::class)
 @Composable
 fun CounterWithService() {
+
+    fun YtVideoIdExtractor(link : String) : String {
+        val linkstring = link
+        val indxofand = link.indexOf("&")
+        val indxofeq = link.indexOf("=")
+        val idOfVid = linkstring.slice(IntRange(indxofeq+1,indxofand-1))
+        return idOfVid
+    }
 
     var count by remember {
         mutableStateOf(0)
@@ -71,6 +76,8 @@ fun CounterWithService() {
 
         }
     }
+
+
 
     val focuManager = LocalFocusManager.current
 
@@ -106,7 +113,7 @@ fun CounterWithService() {
         verticalArrangement = Arrangement.Center
     ) {
 
-        val youtubeLink = "http://youtube.com/watch?v=BM-Yf-DXhMM"
+//        val youtubeLink = "http://youtube.com/watch?v=BM-Yf-DXhMM"
 
         val exoPlayer = remember { ExoPlayer.Builder(context).build() }
 
@@ -123,7 +130,9 @@ fun CounterWithService() {
 //
 //        } }
 
-        var videoId = "BM-Yf-DXhMM"
+        var linkofVid = "https://www.youtube.com/watch?v=BM-Yf-DXhMM&ab_channel=MentalToughness" //goggins
+        val videoId = YtVideoIdExtractor(linkofVid)
+
         val yt = YTExtractor(con = context, CACHING = true, LOGGING = true)
         var ytFiles: SparseArray<YtFile>? = null
         var videoMeta: VideoMeta? by remember{ mutableStateOf(null) }
@@ -149,6 +158,7 @@ fun CounterWithService() {
                     Log.d("streamurl", streamUrl.toString())
                     Log.d("streamurl", ytFiles.toString())
                     //            val source = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+
                     exoPlayer.setMediaItem(mediaItem)
                     exoPlayer.prepare()
                     urlofvidAvailable = true
@@ -177,9 +187,8 @@ fun CounterWithService() {
                                 PlayerView(context).apply {
                                     exoPlayer.playWhenReady = true
                                     exoPlayer.volume = mutedVol
+                                    exoPlayer.repeatMode = REPEAT_MODE_ALL
                                     player = exoPlayer
-
-
                                 }
 
                             },
