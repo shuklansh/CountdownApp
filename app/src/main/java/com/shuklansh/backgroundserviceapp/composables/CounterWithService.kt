@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.util.Log
 import android.util.SparseArray
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -27,27 +28,21 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import at.huber.youtubeExtractor.VideoMeta
-import at.huber.youtubeExtractor.YouTubeExtractor
-import at.huber.youtubeExtractor.YouTubeUriExtractor
-import at.huber.youtubeExtractor.YtFile
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player.RepeatMode
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.Util
+import com.maxrave.kotlinyoutubeextractor.*
+import com.maxrave.kotlinyoutubeextractor.State
 import com.shuklansh.backgroundserviceapp.R
 import com.shuklansh.backgroundserviceapp.services.BackgroundService
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, DelicateCoroutinesApi::class)
 @Composable
 fun CounterWithService() {
 
@@ -100,6 +95,10 @@ fun CounterWithService() {
     val currentWindow = 0
     val pwhenr = true
 
+//    var streamUrl : String? by remember { mutableStateOf(null) }
+    var urlofvidAvailable by remember { mutableStateOf(false) }
+
+
 
     Column(
         Modifier.fillMaxSize(),
@@ -109,90 +108,54 @@ fun CounterWithService() {
 
         val youtubeLink = "http://youtube.com/watch?v=BM-Yf-DXhMM"
 
-        val exoPlayer = remember { ExoPlayer.Builder(context).build().apply {
+        val exoPlayer = remember { ExoPlayer.Builder(context).build() }
 
-            val dataSourceFactory : DataSource.Factory = DefaultDataSourceFactory(
-                context, Util.getUserAgent(context, context.packageName)
-            )
-            val mediaItem = MediaItem.fromUri("https://rr8---sn-ci5gup-qxay.googlevideo.com/videoplayback?expire=1687986665&ei=iU2cZP3uKsq94t4PxrS_wA4&ip=103.121.205.48&id=o-AE35EaFX_BmIz0Gz8Utcx8LJ9cBZ8GEd_2AK9y7r7hGI&itag=22&source=youtube&requiressl=yes&spc=qEK7B4AmwmgxGzoA__ZT4DxW7_gosfs6VLcJLT9mmw&vprv=1&svpuc=1&mime=video%2Fmp4&ns=f_BYU8UlEbMc51BwHxqcQoEN&cnr=14&ratebypass=yes&dur=68.893&lmt=1673526261383648&fexp=24007246,24363391&c=WEB&txp=5311224&n=SfhuXLfW8SVEtQ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRQIhAO0yNAy7BMRRjX3wgnsJivmcTuDc7Ar-k36ms0UhRpiBAiBLTKmcjwMxihYJuTSWM1w7T5Wj6OlKniWTk1EaukzktA%3D%3D&title=They%20Don%27t%20Know%20Me%20Son%20%7C%20David%20Goggins&rm=sn-gxo0cgv5qc5oq-3o0e7z,sn-qxaed7z&req_id=a51fa216023ea3ee&redirect_counter=2&cms_redirect=yes&cmsv=e&ipbypass=yes&mh=nf&mip=171.76.13.68&mm=29&mn=sn-ci5gup-qxay&ms=rdu&mt=1687976019&mv=m&mvi=8&pcm2cms=yes&pl=20&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pcm2cms,pl&lsig=AG3C_xAwRgIhANUPLQqyv553gRoUED48MBNQ90C9ULARuoxwcWttv4gZAiEA65gPKLRpLtW51_4FJX_dMIU6WpLZzs8IujzEKJnibko%3D")
-            val source = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
-            this.setMediaSource(source)
-            this.prepare()
-
-
-        } }
+//        val exoPlayer = remember { ExoPlayer.Builder(context).build().apply {
 //
-//        val exoPlayer = remember {
-//            ExoPlayer.Builder(context).build().apply {
-//                setMediaItem(MediaItem.fromUri(url))
-//                repeatMode = ExoPlayer.REPEAT_MODE_ALL
-//                playWhenReady = playWhenReady
-//                volume = mutedVol
-//                prepare()
-//                play()
-//            }
-//        }
+//            val dataSourceFactory : DataSource.Factory = DefaultDataSourceFactory(
+//                context, Util.getUserAgent(context, context.packageName)
+//            )
+//            val mediaItem = MediaItem.fromUri("https://rr8---sn-ci5gup-qxay.googlevideo.com/videoplayback?expire=1687986665&ei=iU2cZP3uKsq94t4PxrS_wA4&ip=103.121.205.48&id=o-AE35EaFX_BmIz0Gz8Utcx8LJ9cBZ8GEd_2AK9y7r7hGI&itag=22&source=youtube&requiressl=yes&spc=qEK7B4AmwmgxGzoA__ZT4DxW7_gosfs6VLcJLT9mmw&vprv=1&svpuc=1&mime=video%2Fmp4&ns=f_BYU8UlEbMc51BwHxqcQoEN&cnr=14&ratebypass=yes&dur=68.893&lmt=1673526261383648&fexp=24007246,24363391&c=WEB&txp=5311224&n=SfhuXLfW8SVEtQ&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRQIhAO0yNAy7BMRRjX3wgnsJivmcTuDc7Ar-k36ms0UhRpiBAiBLTKmcjwMxihYJuTSWM1w7T5Wj6OlKniWTk1EaukzktA%3D%3D&title=They%20Don%27t%20Know%20Me%20Son%20%7C%20David%20Goggins&rm=sn-gxo0cgv5qc5oq-3o0e7z,sn-qxaed7z&req_id=a51fa216023ea3ee&redirect_counter=2&cms_redirect=yes&cmsv=e&ipbypass=yes&mh=nf&mip=171.76.13.68&mm=29&mn=sn-ci5gup-qxay&ms=rdu&mt=1687976019&mv=m&mvi=8&pcm2cms=yes&pl=20&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pcm2cms,pl&lsig=AG3C_xAwRgIhANUPLQqyv553gRoUED48MBNQ90C9ULARuoxwcWttv4gZAiEA65gPKLRpLtW51_4FJX_dMIU6WpLZzs8IujzEKJnibko%3D")
+//            val source = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+//            this.setMediaSource(source)
+//            this.prepare()
+//
+//
+//        } }
 
-//        val exoPlayer = remember { ExoPlayer.Builder(context).build().apply{
-//            repeatMode = ExoPlayer.REPEAT_MODE_ALL
-//            playWhenReady = pwhenr
-//            volume = mutedVol
-//            prepare()
-//            play()
-//        }}
+        var videoId = "BM-Yf-DXhMM"
+        val yt = YTExtractor(con = context, CACHING = true, LOGGING = true)
+        var ytFiles: SparseArray<YtFile>? = null
+        var videoMeta: VideoMeta? by remember{ mutableStateOf(null) }
 
-        //exoPlayer = ExoPlayer.Builder(context).build()
+        LaunchedEffect(key1 = true) {
+            yt.extract(videoId)
+            if (yt.state == State.SUCCESS) {
+                ytFiles = yt.getYTFiles()
+                videoMeta = yt.getVideoMeta()
+                var ytFile = ytFiles?.get(17)
+                val audioYtFiles =
+                    ytFiles?.getAudioOnly()?.bestQuality()
+                val videoYtFiles  =
+                    ytFiles?.getVideoOnly()?.bestQuality()
+                var streamUrl = ytFile?.url
 
 
-//        val youtubeLink = "https://youtu.be/BM-Yf-DXhMM"
+                if (videoYtFiles != null ) {
 
+                    val mediaItem = MediaItem.fromUri(videoYtFiles.url!!)
+                    Log.d("besturl", videoYtFiles.url!!)
+                    Log.d("streamurl", streamUrl.toString())
+                    //            val source = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                    exoPlayer.setMediaItem(mediaItem)
+                    exoPlayer.prepare()
+                    urlofvidAvailable = true
+                } else {
+                    Log.d("%%%%", "null streamurl")
+                }
+            }
+        }
 
-//        object : YouTubeExtractor(context) {
-//            override fun onExtractionComplete(
-//                ytFiles: SparseArray<YtFile>?,
-//                videoMeta: VideoMeta?
-//            ) {
-//                if (ytFiles != null) {
-//                    val itag = 137
-//                    val audioTag = 140
-//                    val videoUrl = ytFiles[itag].url
-//                    val audioUrl = ytFiles[audioTag].url
-//
-//                    val audioSource: MediaSource = ProgressiveMediaSource.Factory(
-//                        DefaultHttpDataSource.Factory()
-//                    ).createMediaSource(MediaItem.fromUri(audioUrl))
-//
-//                    val videoSource: MediaSource = ProgressiveMediaSource.Factory(
-//                        DefaultHttpDataSource.Factory()
-//                    ).createMediaSource(MediaItem.fromUri(videoUrl))
-//
-//
-//                    exoPlayer.setMediaSource(
-//                        MergingMediaSource(
-//                            true, videoSource, audioSource
-//                        ), true
-//                    )
-//
-////                        setMediaItem(MediaItem.fromUri(youtubeLink))
-//
-//
-//
-//
-//
-//                }
-//            }
-//        }.extract(youtubeLink, false, true)
-
-//
-//        object : YouTubeExtractor(context) {
-//            override fun onExtractionComplete(ytFiles: SparseArray<YtFile>, vMeta: VideoMeta) {
-//                if (ytFiles != null) {
-//                    val itag = 22
-//                    val downloadUrl = ytFiles[itag].url
-//
-//                }
-//            }
-//        }.extract(youtubeLink, false,true)
 
 
         if (count == 0) {
@@ -203,19 +166,43 @@ fun CounterWithService() {
             ) {
 
 
-                AndroidView(
-                    factory = { context ->
-                        PlayerView(context).apply {
-                            player = exoPlayer
-                            (player as ExoPlayer).playWhenReady = true
-                        }
+                if (urlofvidAvailable != false ) {
+                    Column(Modifier.fillMaxWidth().height(286.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center) {
+                        AndroidView(
+                            factory = { context ->
+                                PlayerView(context).apply {
+                                    exoPlayer.playWhenReady = true
+                                    player = exoPlayer
 
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
+
+                                }
+
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(244.dp)
+                                .padding(12.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+                        Text(text = videoMeta!!.title.toString())
+                    }
+                } else {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(286.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colors.primary,
+                        )
+
+                    }
+
+                }
                 Spacer(Modifier.height(12.dp))
                 Row(
                     Modifier.fillMaxWidth(),

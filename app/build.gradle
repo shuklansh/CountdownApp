@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.shuklansh.backgroundserviceapp"
-        minSdk 21
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -70,7 +70,6 @@ dependencies {
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
-    implementation 'com.github.HaarigerHarald:android-youtubeExtractor:v2.1.0'
-
+    implementation 'com.github.maxrave-dev:kotlin-youtubeExtractor:0.0.4'
 
 }

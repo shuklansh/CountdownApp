@@ -38,6 +38,7 @@ class BackgroundService : Service() {
         Log.d("@@@", "SERVICE STARTED")
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         if (intent != null) {
@@ -47,7 +48,7 @@ class BackgroundService : Service() {
 
 
         isRunning = true
-        job = CoroutineScope(Dispatchers.Default).launch {
+        job = GlobalScope.launch {
             while (isRunning) {
 
                 val intent = Intent("counter_screen").apply {
