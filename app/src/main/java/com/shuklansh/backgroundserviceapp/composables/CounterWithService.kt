@@ -133,7 +133,7 @@ fun CounterWithService() {
             if (yt.state == State.SUCCESS) {
                 ytFiles = yt.getYTFiles()
                 videoMeta = yt.getVideoMeta()
-                val ytFile = ytFiles?.get(17)
+                val ytFile = ytFiles?.get(18)
                 val audioYtFiles =
                     ytFiles?.getAudioOnly()?.bestQuality()
                 val videoYtFiles  =
@@ -141,11 +141,13 @@ fun CounterWithService() {
                 val streamUrl = ytFile?.url
 
 
-                if (videoYtFiles != null ) {
+                if (videoYtFiles != null && streamUrl!=null ) {
 
-                    val mediaItem = MediaItem.fromUri(videoYtFiles.url!!)
+//                    val mediaItem = MediaItem.fromUri(videoYtFiles.url!!) //best quality
+                    val mediaItem = MediaItem.fromUri(streamUrl) // lowest quality
                     Log.d("besturl", videoYtFiles.url!!)
                     Log.d("streamurl", streamUrl.toString())
+                    Log.d("streamurl", ytFiles.toString())
                     //            val source = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
                     exoPlayer.setMediaItem(mediaItem)
                     exoPlayer.prepare()
@@ -257,7 +259,8 @@ fun CounterWithService() {
                 //backgroundColor = Color(204, 204, 204, 255),
                 cursorColor = Color.Black,
                 //textColor = Color.Black,
-                //disabledLabelColor = Color(66, 66, 66, 255),
+                disabledLabelColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
