@@ -85,7 +85,7 @@ fun CounterWithService() {
 
 
     var muted by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     var mutedVol by remember {
         mutableStateOf(0f)
@@ -133,12 +133,12 @@ fun CounterWithService() {
             if (yt.state == State.SUCCESS) {
                 ytFiles = yt.getYTFiles()
                 videoMeta = yt.getVideoMeta()
-                var ytFile = ytFiles?.get(17)
+                val ytFile = ytFiles?.get(17)
                 val audioYtFiles =
                     ytFiles?.getAudioOnly()?.bestQuality()
                 val videoYtFiles  =
                     ytFiles?.getVideoOnly()?.bestQuality()
-                var streamUrl = ytFile?.url
+                val streamUrl = ytFile?.url
 
 
                 if (videoYtFiles != null ) {
@@ -166,7 +166,7 @@ fun CounterWithService() {
             ) {
 
 
-                if (urlofvidAvailable != false ) {
+                if (urlofvidAvailable == true ) {
                     Column(Modifier.fillMaxWidth().height(286.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center) {
@@ -174,6 +174,7 @@ fun CounterWithService() {
                             factory = { context ->
                                 PlayerView(context).apply {
                                     exoPlayer.playWhenReady = true
+                                    exoPlayer.volume = mutedVol
                                     player = exoPlayer
 
 
@@ -187,6 +188,7 @@ fun CounterWithService() {
                                 .clip(RoundedCornerShape(8.dp))
                         )
                         Text(text = videoMeta!!.title.toString())
+                        Text(text = videoMeta!!.author.toString())
                     }
                 } else {
                     Column(
@@ -225,7 +227,7 @@ fun CounterWithService() {
                     ) {
                         Icon(
                             painter = painterResource(
-                                id = if (muted) {
+                                id = if (muted==true) {
                                     R.drawable.ic_baseline_volume_off_24
                                 } else {
                                     R.drawable.ic_baseline_volume_up_24
